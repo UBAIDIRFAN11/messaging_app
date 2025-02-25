@@ -1,0 +1,30 @@
+{%extends "layout.html"%} {%block title%}Login{%endblock%}
+
+{%block styles%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+{%endblock%}
+
+{%block body%}
+
+<h1>Welcome to the Login Page</h1>
+
+<p>Enter your details below to login.</p>
+
+<form action="/login" method="POST">
+    <fieldset>
+        <legend>Login</legend>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">Login</button>
+    </fieldset>
+
+</form>
+
+<p>Don't have an account? Sign-up now with this <a href="signup">link!</a></p>
+
+{%endblock%}
+

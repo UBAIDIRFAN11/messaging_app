@@ -1,0 +1,118 @@
+{%extends 'layout.html'%} {%block title%}Meeting{%endblock%} {%block styles%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+
+
+{%endblock%} 
+{%block body%}
+
+
+
+
+
+
+<div class="message-box">
+    <!-- Exit button -->
+    <div class="exit">
+        <button type="button" class="btn-back" ><i class="fa-solid fa-arrow-left-long"></i></button>
+    </div>
+    <h2 class="black-text" align="center">Chat Room: {{code}}</h2>
+
+    <!-- Input area for sending messages -->
+    <div class="inputs meeting-txt">
+        <input
+            class="meeting-msg-input"
+            type="text"
+            id="message"
+            name="message"
+            placeholder="Type your message here"
+        />
+        <button
+            class="btn btn-primary"
+            type="button"
+            id="send-btn"
+            name="send"
+            onclick="sendMessage()"
+        >
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <!-- Scrollable message container -->
+    <div class="messages" id="messages">
+        <!-- Messages will be dynamically appended here -->
+    </div>
+</div>
+    
+
+
+
+
+
+    <script>
+        document.querySelector(".exit").addEventListener("click", () => {
+            window.location.href = "{{url_for('views.rooms')}}";
+        });     
+    </script>
+
+
+
+
+    
+    
+
+
+<!-- Update date later -->
+    <script type="text/javascript">
+        var socketio = io();
+
+        const messages = document.getElementById("messages");
+
+        const createMessage = (name, msg) => {
+    const content = `
+    <div class="message">
+        <div class="text">
+            <span>
+                <strong>${name}</strong>: ${msg}
+            </span>
+            <span class="muted"> ${new Date().toLocaleTimeString()} 
+            </span>
+        </div>
+    </div>
+    `;
+    messages.innerHTML += content;
+};
+
+        socketio.on("message", (data) => {
+            createMessage(data.name, data.message);
+        });
+
+
+
+
+
+
+
+        const sendMessage = () => {
+            const message = document.getElementById("message");
+            if (message.value == "") {
+                return;
+            }
+            socketio.emit("message", { data: message.value });
+            message.value = "";
+        };
+
+    </script>
+
+    {% for msg in messages %}
+        <script type="text/javascript">
+            createMessage("{{msg.name}}", "{{msg.message}}");
+        </script>
+    
+    {% endfor %}
+
+
+
+{%endblock%} 
+
+
+

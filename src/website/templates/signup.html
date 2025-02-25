@@ -1,0 +1,42 @@
+{%extends "layout.html"%} {%block title%}Sign Up{%endblock%} {%block styles%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+{%endblock%} {%block body%}
+
+<h1>Welcome to the Sign Up Page</h1>
+<p>Sign up here.</p>
+
+<form method="POST" action="{{url_for('auth.signup')}}">
+    <fieldset>
+        <legend>Sign Up</legend>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+        </div>
+        <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
+        <button type="submit">Sign Up</button>
+    </fieldset>
+</form>
+
+<p>Already have an account? Login now using this <a href="login">link!</a></p>
+
+{%endblock%}

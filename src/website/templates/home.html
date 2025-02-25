@@ -1,0 +1,36 @@
+{% extends "layout.html" %} {% block title %}Home{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+{% endblock %}
+
+{% block body%}
+<!-- paste coffee logo on this page -->
+ <div class="image-container">
+    <!-- <img  src="{{url_for('static', filename='images/grad-wallpaper.png')}}" alt="Coffee" width="2400" height="1000"> -->
+
+    <div class="text-center overlay-text">
+        <h1>Welcome to <i>G'day!</i></h1>
+        <p>Discover a world of seamless communication and connection. Whether you’re looking to chat with random people in vibrant rooms, connect with friends one-on-one, or organize group discussions, G'day has got you covered.</p>
+            
+        <p>
+            Here, you can:
+            <ul>
+                <li class="colorA">Join Public Rooms: Dive into conversations with like-minded individuals or explore diverse perspectives.</li>
+                <li class="colorB">Create Your Profile: Showcase your personality and connect with others easily.</li>
+                <li class="colorC">Private Chats: Start specific conversations with your friends and enjoy uninterrupted connections.</li>
+                <li class="colorD">Schedule Meetings: Need a space for brainstorming or catching up? Plan and host meetings in dedicated rooms.</li>
+
+            </ul>
+        </p>
+            
+            <br><p>Get started today and redefine how you stay connected!</p>
+    </div>
+</div>
+{%endblock%}
+
+{% block scripts %}
+
+
+
+{%endblock%}

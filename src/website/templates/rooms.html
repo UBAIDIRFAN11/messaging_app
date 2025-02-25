@@ -1,0 +1,209 @@
+{% extends "layout.html" %} {% block title %}Rooms{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+{% endblock %}
+
+{% block body%}
+
+
+<br>
+<div class="page-layout">
+    <form method="post" class="form-buttons">
+        <h2 class="large-text" align="center">Conferencing made easy for all</h2>
+        <h3 class="small-text">Connect and collaborate with <i>Rooms</i></h3><br> 
+
+        <div align="center" class="room-nickname">
+            <label>Name:</label>
+            <input class="name-input" type="text" placeholder="Pick a nickname" name="name" value="{{name}}" >
+        </div><br>
+        <div class="join" align="center">
+            <label class="large-text"><strong>Join Room: </strong></label>
+            <input class="join-room-input" type="text" placeholder="Enter a room code" name="code" value="{{code}}">
+            <button name="join" type="submit" class="btn btn-primary join-room-btn"><i class="fa-solid fa-door-open"></i></button>
+    
+
+        </div><br>
+        <div align="center">
+        <label class="create-new-room-label">Create Room</label>
+        <button name="create" type="submit" class="create-btn btn btn-primary create-room-btn"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        {%if error%}
+        <ul>
+            <li>{{error}}</li>
+        </ul>
+        {%endif%}
+    </form>
+
+
+
+
+
+    <div class="whole-calender">
+    <!-- Calendar Section -->
+    <div class="calendar">
+
+        <div class="header">
+            <button id="prevWeekBtn">&#8592;</button>
+            <h3 id="weekLabel"><span id="currentWeekDate"></span></h3>
+            <button id="nextWeekBtn">&#8594;</button>
+        </div>
+
+        <table class="calendar-table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody id="calendarBody">
+                <!-- Table rows dynamically generated -->
+            </tbody>
+        </table>
+
+        <form id="addEventForm">
+            <input type="date" id="eventDate" />
+            <input type="time" id="starttime" />
+            <input type="time" id="endtime" />
+            <input type="text" id="eventName" placeholder="Event name" />
+            
+            <button type="submit"  id="addEventBtn" class="create-btn btn btn-primary create-room-btn"><i class="fa-solid fa-check"></i></button>
+        </form>
+    </div>
+    </div>
+</div>
+<div class="extra-padding-bottom"></div>
+
+
+<script>
+    const events = [];
+    const startHour = 0; // day start
+    const endHour = 23; // day end
+
+    let currentWeekStartDate = new Date();
+    currentWeekStartDate.setDate(currentWeekStartDate.getDate() - currentWeekStartDate.getDay()); // Start on Sunday
+
+    function updateWeekDisplay() {
+        const weekLabel = document.getElementById("currentWeekDate");
+        const start = currentWeekStartDate.toLocaleDateString();
+        const end = new Date(currentWeekStartDate).setDate(currentWeekStartDate.getDate() + 6);
+        weekLabel.textContent = `${start} - ${new Date(end).toLocaleDateString()}`;
+
+        generateTable();
+        renderEvents();
+    }
+
+    function generateTable() {
+        const tbody = document.getElementById("calendarBody");
+        tbody.innerHTML = "";
+
+        for (let hour = startHour; hour <= endHour; hour++) {
+            const row = document.createElement("tr");
+
+            // Time column
+            const timeCell = document.createElement("td");
+            timeCell.textContent = `${hour}:00`;
+            row.appendChild(timeCell);
+
+            // Day columns
+            for (let day = 0; day < 7; day++) {
+                const cell = document.createElement("td");
+                cell.setAttribute("data-day", day);
+                cell.setAttribute("data-hour", hour);
+                row.appendChild(cell);
+            }
+
+            tbody.appendChild(row);
+        }
+    }
+
+    function renderEvents() {
+    const startOfWeek = new Date(currentWeekStartDate);
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    // Clear previous events
+    document.querySelectorAll(".event").forEach((el) => el.remove());
+
+    // Render events that fall within the current week
+    events
+        .filter((event) => {
+            const eventDate = new Date(event.date);
+            return eventDate >= startOfWeek && eventDate <= endOfWeek;
+        })
+        .forEach((event) => {
+            const eventDate = new Date(event.date);
+            const day = eventDate.getDay();
+            const startHour = parseInt(event.starttime.split(":")[0], 10);
+            const startMinute = parseInt(event.starttime.split(":")[1], 10);
+            const endHour = parseInt(event.endtime.split(":")[0], 10);
+            const endMinute = parseInt(event.endtime.split(":")[1], 10);
+
+            // Select the correct cell in the table
+            const eventCell = document.querySelector(
+                `td[data-day="${day}"][data-hour="${startHour}"]`
+            );
+
+            if (eventCell) {
+                // Create event element
+                const eventEl = document.createElement("div");
+                eventEl.className = "event";
+                eventEl.textContent = `${event.name}`;
+
+                // Calculate position and height
+                const cellHeight = eventCell.offsetHeight; // Height of a single hour cell
+                const startOffset = (startMinute / 60) * cellHeight;
+                const duration =
+                    ((endHour - startHour) * 60 + (endMinute - startMinute)) /
+                    60;
+                const eventHeight = duration * cellHeight;
+
+                // Apply styles to position event
+                eventEl.style.position = "absolute";
+                eventEl.style.top = `${startOffset}px`;
+                eventEl.style.height = `${eventHeight}px`;
+                eventEl.style.left = "5px";
+                eventEl.style.right = "5px";
+
+                // Add the event to the cell
+                eventCell.style.position = "relative"; // Ensure the cell is a relative container
+                eventCell.appendChild(eventEl);
+            }
+        });
+}
+
+    document.getElementById("addEventForm").onsubmit = (e) => {
+        e.preventDefault();
+        const event = {
+            date: document.getElementById("eventDate").value,
+            starttime: document.getElementById("starttime").value,
+            endtime: document.getElementById("endtime").value,
+            name: document.getElementById("eventName").value,
+        };
+
+        events.push(event);
+        renderEvents();
+    };
+
+    document.getElementById("prevWeekBtn").onclick = () => {
+        currentWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
+        updateWeekDisplay();
+    };
+
+    document.getElementById("nextWeekBtn").onclick = () => {
+        currentWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
+        updateWeekDisplay();
+    };
+
+    updateWeekDisplay();
+</script>
+
+
+
+{%endblock%}

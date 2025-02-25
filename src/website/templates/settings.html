@@ -1,0 +1,21 @@
+{% extends "layout.html" %} {% block title %}Settings{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+{% endblock %}
+
+{% block body%}
+
+<div class="text-center">
+    <h1>Welcome to the Settings Page</h1>
+    <p>Edit your settings here.</p>
+</div>
+
+<p class="text-center">Change theme:</p>
+<ul>
+    <li>Default</li>
+    <li>Vibrant</li>
+    <li>Dull</li>
+</ul>
+
+{%endblock%}
